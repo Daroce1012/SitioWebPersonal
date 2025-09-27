@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Inicio del sitio personal de Daniela.">
+  <title>Inicio - Daniela</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <nav aria-label="Navegación principal">
+      <ul class="main-nav">
+        <li><a href="index.html" aria-current="page">Inicio</a></li>
+        <li><a href="about.html">Sobre mí</a></li>
+        <li><a href="hobbies.html">Aficiones</a></li>
+        <li><a href="contact.html">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero con video de fondo -->
+  <section class="hero" role="banner" aria-label="Presentación">
+    <video autoplay muted loop playsinline class="hero-video">
+      <source src="video/intro.mp4" type="video/mp4">
+      Tu navegador no soporta video en HTML5.
+    </video>
+
+    <header class="hero-content">
+      <figure>
+        <img src="img/foto-perfil.jpg" alt="Retrato de Daniela" class="hero-img">
+        <figcaption class="visually-hidden">Daniela</figcaption>
+      </figure>
+      <h1>Hola, soy Daniela</h1>
+      <p>Estudiante del Máster en Ingeniería Web</p>
+      <p><a href="about.html" class="btn">Conóceme</a></p>
+    </header>
+  </section>
+
+  <main id="contenido-principal">
+    <article class="intro card">
+      <header>
+        <h2>Bienvenida</h2>
+      </header>
+      <p>Este es mi espacio en línea donde comparto información sobre mí, mis intereses y cómo contactarme.</p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <time datetime="2025">2025</time> Daniela. Todos los derechos reservados.</p>
+    <p>
+      <a href="https://jigsaw.w3.org/css-validator/check/referer">
+        <img style="border:0;width:88px;height:31px"
+            src="https://jigsaw.w3.org/css-validator/images/vcss-blue"
+            alt="¡CSS Válido!" />
+      </a>
+    </p>
+  </footer>
+
+</body>
+</html>
+
