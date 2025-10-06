@@ -132,6 +132,12 @@ h1, h2 {
   width: 100%;
 }
 
+.validator-badge {
+  border: 0;
+  width: 88px;
+  height: 31px;
+}
+
 /* ===== ACCESIBILIDAD ===== */
 .visually-hidden {
   position: absolute;
