@@ -10,14 +10,46 @@
 <body>
 
   <header class="site-header">
-    <nav aria-label="Navegación principal">
-      <ul class="main-nav">
-        <li><a href="index.html" aria-current="page">Inicio</a></li>
-        <li><a href="about.html">Sobre mí</a></li>
-        <li><a href="hobbies.html">Aficiones</a></li>
-        <li><a href="contact.html">Contacto</a></li>
-      </ul>
-    </nav>
+    <div class="header-container">
+      <nav aria-label="Navegación principal">
+        <ul class="main-nav">
+          <li><a href="index.html" aria-current="page" data-i18n="nav.inicio">Inicio</a></li>
+          <li><a href="about.html" data-i18n="nav.sobre-mi">Sobre mí</a></li>
+          <li><a href="hobbies.html" data-i18n="nav.aficiones">Aficiones</a></li>
+          <li><a href="contact.html" data-i18n="nav.contacto">Contacto</a></li>
+        </ul>
+      </nav>
+      
+      <div class="header-tools">
+        <!-- Buscador en el header -->
+        <form id="search-form" role="search" class="header-search">
+          <input 
+            type="search" 
+            id="search-input" 
+            data-i18n="search.placeholder"
+            placeholder="Buscar en el sitio..."
+            aria-label="Buscar en el sitio">
+          <button type="submit" class="search-btn" aria-label="Buscar">🔍</button>
+        </form>
+        
+        <!-- Selector de idioma -->
+        <div class="language-selector-container">
+          <label for="language-selector">🌐</label>
+          <select id="language-selector" aria-label="Seleccionar idioma">
+            <option value="es">Español</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Resultados de búsqueda (modal/overlay) -->
+    <div id="search-results-overlay" class="search-overlay" style="display: none;">
+      <div class="search-results-container">
+        <button id="close-search" class="close-search-btn" aria-label="Cerrar búsqueda">✕</button>
+        <div id="search-results"></div>
+      </div>
+    </div>
   </header>
 
   <!-- Hero con video de fondo -->
@@ -32,23 +64,23 @@
         <img src="img/foto-perfil.jpg" alt="Retrato de Daniela" class="hero-img">
         <figcaption class="visually-hidden">Daniela</figcaption>
       </figure>
-      <h1>Hola, soy Daniela</h1>
-      <p>Estudiante del Máster en Ingeniería Web</p>
-      <p><a href="about.html" class="btn">Conóceme</a></p>
+      <h1 data-i18n="index.titulo">Hola, soy Daniela Rodríguez Cepero</h1>
+      <p data-i18n="index.subtitulo">Desarrolladora Full-Stack | Profesora | Investigadora</p>
+      <p><a href="about.html" class="btn" data-i18n="index.btn-conoceme">Conóceme</a></p>
     </header>
   </section>
 
   <main id="contenido-principal">
     <article class="intro card">
       <header>
-        <h2>Bienvenida</h2>
+        <h2 data-i18n="index.bienvenida">Bienvenida</h2>
       </header>
-      <p>Este es mi espacio en línea donde comparto información sobre mí, mis intereses y cómo contactarme.</p>
+      <p data-i18n="index.descripcion">Desarrolladora Full-Stack con experiencia en React, Angular, .NET y Python. Profesora de matemáticas e investigadora especializada en métodos numéricos y simulaciones. Actualmente cursando el Máster en Ingeniería Web con especialización en Seguridad Web en la Universidad de Oviedo.</p>
     </article>
   </main>
 
   <footer class="site-footer">
-    <p>&copy; <time datetime="2025">2025</time> Daniela. Todos los derechos reservados.</p>
+    <p>&copy; <time datetime="2025-12-12">12/12/2025</time> Daniela. <span data-i18n="footer.derechos">Todos los derechos reservados.</span></p>
     <p>
       <a href="https://jigsaw.w3.org/css-validator/check/referer">
         <img class="validator-badge"
@@ -64,6 +96,11 @@
     </p>
   </footer>
 
+  <!-- i18next para internacionalización -->
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.2.0/i18nextBrowserLanguageDetector.min.js"></script>
+  <script src="js/i18n-config.js"></script>
+  <script src="js/search.js"></script>
 </body>
 </html>
 
