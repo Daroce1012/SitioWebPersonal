@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Página de contacto de Daniela.">
-  <title>Contacto - Daniela</title>
+  <title>Contacto</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <header class="site-header">
-    <div class="header-container">
+    <section class="header-container">
       <nav aria-label="Navegación principal">
         <ul class="main-nav">
           <li><a href="index.html" data-i18n="nav.inicio">Inicio</a></li>
@@ -20,7 +20,7 @@
         </ul>
       </nav>
       
-      <div class="header-tools">
+      <aside class="header-tools">
         <!-- Buscador en el header -->
         <form id="search-form" role="search" class="header-search">
           <input 
@@ -29,28 +29,39 @@
             data-i18n="search.placeholder"
             placeholder="Buscar en el sitio..."
             aria-label="Buscar en el sitio">
-          <button type="submit" class="search-btn" aria-label="Buscar">🔍</button>
+          <button type="submit" class="search-btn" aria-label="Buscar">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </button>
         </form>
         
         <!-- Selector de idioma -->
-        <div class="language-selector-container">
-          <label for="language-selector">🌐</label>
+        <section class="language-selector-container">
+          <label for="language-selector">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </label>
           <select id="language-selector" aria-label="Seleccionar idioma">
             <option value="es">Español</option>
             <option value="en">English</option>
           </select>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Resultados de búsqueda (modal/overlay) -->
-    <div id="search-results-overlay" class="search-overlay" style="display: none;">
-      <div class="search-results-container">
-        <button id="close-search" class="close-search-btn" aria-label="Cerrar búsqueda">✕</button>
-        <div id="search-results"></div>
-      </div>
-    </div>
+        </section>
+      </aside>
+    </section>
   </header>
+
+  <!-- Resultados de búsqueda (modal/overlay) -->
+  <aside id="search-results-overlay" class="search-overlay" role="dialog" aria-modal="true" aria-label="Resultados de búsqueda" style="display: none;">
+    <section class="search-results-container">
+      <button id="close-search" class="close-search-btn" aria-label="Cerrar búsqueda">✕</button>
+      <section id="search-results"></section>
+    </section>
+  </aside>
 
   <main id="contenido-principal">
     <section class="card">
@@ -67,7 +78,7 @@
     <!-- Redes Sociales -->
     <section class="card">
       <h2 data-i18n="contact.redes-sociales">Redes Sociales</h2>
-      <div class="social-links">
+      <nav class="social-links" aria-label="Enlaces a redes sociales">
         <a href="https://www.linkedin.com/in/daroce1012" target="_blank" rel="noopener noreferrer" class="social-link">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
             <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
@@ -86,54 +97,53 @@
           </svg>
           GitHub
         </a>
-      </div>
+      </nav>
     </section>
 
     <!-- Referencias -->
-    <section class="card">
+      <section class="card">
       <h2 data-i18n="contact.referencias">Referencias</h2>
       <p data-i18n="contact.referencias-desc">Personas que pueden avalar mi trabajo y experiencia:</p>
       
-      <div class="references-grid">
+      <section class="references-grid">
         <article class="reference-card">
-          <h3>Dr. Carlos Martínez</h3>
-          <p class="reference-position">Profesor Titular</p>
-          <p class="reference-company">Universidad de Oviedo - Departamento de Informática</p>
+          <h3>Dra. C. Aymée de los Ángeles Marrero Severo</h3>
+          <p class="reference-position">Profesora</p>
+          <p class="reference-company">Universidad de La Habana</p>
           <p class="reference-contact">
-            <a href="mailto:carlos.martinez@uniovi.es">carlos.martinez@uniovi.es</a>
+            Tel: <a href="tel:+5352385035">+53 5 2385035</a>
           </p>
         </article>
 
         <article class="reference-card">
-          <h3>Ana García López</h3>
-          <p class="reference-position">Lead Developer</p>
-          <p class="reference-company">Tech Solutions S.L.</p>
+          <h3>MSc. Wilfredo Morales Lezca</h3>
+          <p class="reference-position">Profesor</p>
+          <p class="reference-company">Universidad de La Habana</p>
           <p class="reference-contact">
-            <a href="mailto:ana.garcia@techsolutions.es">ana.garcia@techsolutions.es</a><br>
-            <a href="https://www.linkedin.com/in/anagarcia" target="_blank" rel="noopener">LinkedIn</a>
+            Tel: <a href="tel:+5353252046">+53 5 3252046</a>
           </p>
         </article>
 
         <article class="reference-card">
-          <h3>Miguel Fernández</h3>
-          <p class="reference-position">CTO</p>
-          <p class="reference-company">Digital Innovation Lab</p>
+          <h3>Ibai Arrizabalaga Cameno</h3>
+          <p class="reference-position">Fundador y Business Manager</p>
+          <p class="reference-company">Iberant Technologies S.L</p>
           <p class="reference-contact">
-            <a href="mailto:m.fernandez@digilab.com">m.fernandez@digilab.com</a><br>
-            Tel: +34 985 123 456
+            <a href="mailto:ibai.arrizabalaga@iberant.com">ibai.arrizabalaga@iberant.com</a><br>
+            Tel: <a href="tel:+34620219379">+34 620 219 379</a>
           </p>
         </article>
 
         <article class="reference-card">
-          <h3>Laura Sánchez</h3>
-          <p class="reference-position">Project Manager</p>
-          <p class="reference-company">Freelance Client</p>
+          <h3>Bryan Machin Garcia</h3>
+          <p class="reference-position">Full Stack Developer</p>
+          <p class="reference-company">Freelance</p>
           <p class="reference-contact">
-            <a href="mailto:laura.sanchez@example.com">laura.sanchez@example.com</a><br>
-            Tel: +34 625 789 012
+            <a href="mailto:bryanmachin98@gmail.com">bryanmachin98@gmail.com</a><br>
+            Tel: <a href="tel:+34642277518">+34 642 27 75 18</a>
           </p>
         </article>
-      </div>
+      </section>
     </section>
   </main>
 
@@ -145,12 +155,6 @@
             src="https://jigsaw.w3.org/css-validator/images/vcss"
             alt="Valid CSS!">
       </a>
-    
-      <a href="https://jigsaw.w3.org/css-validator/check/referer">
-        <img class="validator-badge"
-            src="https://jigsaw.w3.org/css-validator/images/vcss-blue"
-            alt="Valid CSS!">
-      </a>
     </p>
   </footer>
 
@@ -158,7 +162,10 @@
   <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.2.0/i18nextBrowserLanguageDetector.min.js"></script>
   <script src="js/i18n-config.js"></script>
-  <script src="js/search.js"></script>
+  
+  <!-- Buscador automático -->
+  <script src="js/pages.js"></script>
+  <script src="js/search-auto.js"></script>
 </body>
 </html>
 

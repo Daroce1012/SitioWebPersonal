@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Inicio del sitio personal de Daniela.">
-  <title>Inicio - Daniela</title>
+  <meta name="description" content="Sitio web personal - Desarrolladora Full-Stack, Profesora e Investigadora.">
+  <title>Inicio</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <header class="site-header">
-    <div class="header-container">
+    <section class="header-container">
       <nav aria-label="Navegación principal">
         <ul class="main-nav">
           <li><a href="index.html" aria-current="page" data-i18n="nav.inicio">Inicio</a></li>
@@ -20,7 +20,7 @@
         </ul>
       </nav>
       
-      <div class="header-tools">
+      <aside class="header-tools">
         <!-- Buscador en el header -->
         <form id="search-form" role="search" class="header-search">
           <input 
@@ -29,28 +29,39 @@
             data-i18n="search.placeholder"
             placeholder="Buscar en el sitio..."
             aria-label="Buscar en el sitio">
-          <button type="submit" class="search-btn" aria-label="Buscar">🔍</button>
+          <button type="submit" class="search-btn" aria-label="Buscar">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </button>
         </form>
         
         <!-- Selector de idioma -->
-        <div class="language-selector-container">
-          <label for="language-selector">🌐</label>
+        <section class="language-selector-container">
+          <label for="language-selector">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </label>
           <select id="language-selector" aria-label="Seleccionar idioma">
             <option value="es">Español</option>
             <option value="en">English</option>
           </select>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Resultados de búsqueda (modal/overlay) -->
-    <div id="search-results-overlay" class="search-overlay" style="display: none;">
-      <div class="search-results-container">
-        <button id="close-search" class="close-search-btn" aria-label="Cerrar búsqueda">✕</button>
-        <div id="search-results"></div>
-      </div>
-    </div>
+        </section>
+      </aside>
+    </section>
   </header>
+
+  <!-- Resultados de búsqueda (modal/overlay) -->
+  <aside id="search-results-overlay" class="search-overlay" role="dialog" aria-modal="true" aria-label="Resultados de búsqueda" style="display: none;">
+    <section class="search-results-container">
+      <button id="close-search" class="close-search-btn" aria-label="Cerrar búsqueda">✕</button>
+      <section id="search-results"></section>
+    </section>
+  </aside>
 
   <!-- Hero con video de fondo -->
   <section class="hero" role="banner" aria-label="Presentación">
@@ -87,12 +98,6 @@
             src="https://jigsaw.w3.org/css-validator/images/vcss"
             alt="Valid CSS!">
       </a>
-   
-      <a href="https://jigsaw.w3.org/css-validator/check/referer">
-        <img class="validator-badge"
-            src="https://jigsaw.w3.org/css-validator/images/vcss-blue"
-            alt="Valid CSS!">
-      </a>
     </p>
   </footer>
 
@@ -100,7 +105,10 @@
   <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.2.0/i18nextBrowserLanguageDetector.min.js"></script>
   <script src="js/i18n-config.js"></script>
-  <script src="js/search.js"></script>
+  
+  <!-- Buscador automático -->
+  <script src="js/pages.js"></script>
+  <script src="js/search-auto.js"></script>
 </body>
 </html>
 
