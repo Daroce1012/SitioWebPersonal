@@ -41,7 +41,7 @@ body {
 }
 
 .main-nav a {
-  color: #ccc;
+  color: #e8e8e8;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.2s ease;
@@ -130,7 +130,7 @@ body {
   gap: 0.5rem;
 }
 
-.language-selector-container label {
+.language-selector-container .language-label {
   color: #fff;
   font-size: 1.1rem;
   display: flex;
@@ -138,14 +138,14 @@ body {
   cursor: pointer;
 }
 
-.language-selector-container label svg {
+.language-selector-container .language-label svg {
   width: 20px;
   height: 20px;
   stroke: #fff;
   transition: transform 0.2s ease;
 }
 
-.language-selector-container label:hover svg {
+.language-selector-container .language-label:hover svg {
   transform: rotate(15deg) scale(1.1);
 }
 

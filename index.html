@@ -36,12 +36,13 @@
           </button>
         </form>
         <section class="language-selector-container">
-          <label for="language-selector">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <label for="language-selector" class="language-label">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="2" y1="12" x2="22" y2="12"></line>
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
+            <span class="visually-hidden">Idioma</span>
           </label>
           <select id="language-selector" aria-label="Seleccionar idioma">
             <option value="es">Español</option>
@@ -62,6 +63,7 @@
   <section class="hero" role="banner" aria-label="Presentación">
     <video autoplay muted loop playsinline class="hero-video" aria-label="Video de fondo con animación de figuras decorativas">
       <source src="video/intro.mp4" type="video/mp4">
+      <track kind="captions" src="" srclang="es" label="Español" default>
       Tu navegador no soporta video en HTML5.
     </video>
     <header class="hero-content">
