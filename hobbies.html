@@ -21,7 +21,6 @@
       </nav>
       
       <aside class="header-tools">
-        <!-- Buscador en el header -->
         <form id="search-form" role="search" class="header-search">
           <input 
             type="search" 
@@ -36,8 +35,6 @@
             </svg>
           </button>
         </form>
-        
-        <!-- Selector de idioma -->
         <section class="language-selector-container">
           <label for="language-selector">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -55,7 +52,6 @@
     </section>
   </header>
 
-  <!-- Resultados de búsqueda (modal/overlay) -->
   <aside id="search-results-overlay" class="search-overlay" role="dialog" aria-modal="true" aria-label="Resultados de búsqueda" style="display: none;">
     <section class="search-results-container">
       <button id="close-search" class="close-search-btn" aria-label="Cerrar búsqueda">✕</button>
@@ -65,26 +61,23 @@
 
   <main id="contenido-principal">
     <article class="card">
-      <header>
-        <h1 data-i18n="hobbies.titulo">Mis aficiones</h1>
-      </header>
-
-      <section>
+      <h1 data-i18n="hobbies.titulo">Mis aficiones</h1>
+      <section class="hobby-section">
         <h2 data-i18n="hobbies.series-coreanas">Series coreanas</h2>
         <p data-i18n="hobbies.series-desc">Me encanta ver dramas y series coreanas, que combinan historias intensas con riqueza cultural y emocional.</p>
       </section>
 
-      <section>
+      <section class="hobby-section">
         <h2 data-i18n="hobbies.programacion">Programación</h2>
         <p data-i18n="hobbies.programacion-desc">La programación es mi vocación: me gusta experimentar con nuevos lenguajes y frameworks, y construir proyectos personales.</p>
       </section>
 
-      <section>
+      <section class="hobby-section">
         <h2 data-i18n="hobbies.ciencia-ficcion">Ciencia ficción</h2>
         <p data-i18n="hobbies.ciencia-desc">Disfruto de series y películas de ciencia ficción por su capacidad para imaginar futuros y posibilidades tecnológicas.</p>
       </section>
 
-      <section>
+      <section class="hobby-section">
         <h2 data-i18n="hobbies.peliculas">Películas</h2>
         <p data-i18n="hobbies.peliculas-desc">Mi película favorita es <strong>Crepúsculo</strong>, me encanta la mezcla entre romance y elementos fantásticos.</p>
       </section>
@@ -92,22 +85,23 @@
   </main>
 
   <footer class="site-footer">
-    <p>&copy; <time datetime="2025-12-12">12/12/2025</time> Daniela. <span data-i18n="footer.derechos">Todos los derechos reservados.</span></p>
-    <p>
-      <a href="https://jigsaw.w3.org/css-validator/check/referer">
-        <img class="validator-badge"
-            src="https://jigsaw.w3.org/css-validator/images/vcss"
-            alt="Valid CSS!">
-      </a>
-    </p>
+    <div class="footer-content">
+      <p class="footer-copyright">&copy; <time datetime="2025-12-12">12/12/2025</time> Daniela. <span data-i18n="footer.derechos">Todos los derechos reservados.</span></p>
+      <nav class="footer-links" aria-label="Enlaces del pie de página">
+        <a href="sitemap.html" data-i18n="footer.mapa-sitio">Mapa del sitio</a>
+        <span class="footer-separator" aria-hidden="true">|</span>
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="validator-link">
+          <img class="validator-badge"
+              src="https://jigsaw.w3.org/css-validator/images/vcss"
+              alt="Valid CSS!">
+        </a>
+      </nav>
+    </div>
   </footer>
 
-  <!-- i18next para internacionalización -->
   <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.2.0/i18nextBrowserLanguageDetector.min.js"></script>
   <script src="js/i18n-config.js"></script>
-  
-  <!-- Buscador automático -->
   <script src="js/pages.js"></script>
   <script src="js/search-auto.js"></script>
 </body>

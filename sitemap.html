@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Sitio web personal - Desarrolladora Full-Stack, Profesora e Investigadora.">
-  <title>Inicio</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mapa del sitio web - Navegación completa de todas las páginas disponibles.">
+  <title>Mapa del sitio</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
     <section class="header-container">
       <nav aria-label="Navegación principal">
         <ul class="main-nav">
-          <li><a href="index.html" aria-current="page" data-i18n="nav.inicio">Inicio</a></li>
+          <li><a href="index.html" data-i18n="nav.inicio">Inicio</a></li>
           <li><a href="about.html" data-i18n="nav.sobre-mi">Sobre mí</a></li>
           <li><a href="hobbies.html" data-i18n="nav.aficiones">Aficiones</a></li>
           <li><a href="contact.html" data-i18n="nav.contacto">Contacto</a></li>
@@ -59,26 +59,31 @@
     </section>
   </aside>
 
-  <section class="hero" role="banner" aria-label="Presentación">
-    <video autoplay muted loop playsinline class="hero-video" aria-label="Video de fondo con animación de figuras decorativas">
-      <source src="video/intro.mp4" type="video/mp4">
-      Tu navegador no soporta video en HTML5.
-    </video>
-    <header class="hero-content">
-      <figure>
-        <img src="img/foto-perfil.jpg" alt="Retrato de Daniela" class="hero-img">
-        <figcaption class="visually-hidden">Daniela</figcaption>
-      </figure>
-      <h1 data-i18n="index.titulo">Hola, soy Daniela Rodríguez Cepero</h1>
-      <p data-i18n="index.subtitulo">Desarrolladora Full-Stack | Profesora | Investigadora</p>
-      <p><a href="about.html" class="btn" data-i18n="index.btn-conoceme">Conóceme</a></p>
-    </header>
-  </section>
-
   <main id="contenido-principal">
-    <article class="intro card">
-      <h2 data-i18n="index.bienvenida">Bienvenida</h2>
-      <p data-i18n="index.descripcion">Desarrolladora Full-Stack con experiencia en React, Angular, .NET y Python. Profesora de matemáticas e investigadora especializada en métodos numéricos y simulaciones. Actualmente cursando el Máster en Ingeniería Web con especialización en Seguridad Web en la Universidad de Oviedo.</p>
+    <article class="card">
+      <h1 data-i18n="sitemap.titulo">Mapa del sitio</h1>
+      
+      <nav aria-label="Mapa del sitio">
+        <section class="hobby-section">
+          <h2><a href="index.html" data-i18n="sitemap.inicio.titulo">Inicio</a></h2>
+          <p data-i18n="sitemap.inicio.descripcion">Página principal con presentación personal y resumen profesional.</p>
+        </section>
+
+        <section class="hobby-section">
+          <h2><a href="about.html" data-i18n="sitemap.sobre-mi.titulo">Sobre mí</a></h2>
+          <p data-i18n="sitemap.sobre-mi.descripcion">Información detallada sobre formación académica, experiencia laboral y logros profesionales.</p>
+        </section>
+
+        <section class="hobby-section">
+          <h2><a href="hobbies.html" data-i18n="sitemap.aficiones.titulo">Aficiones</a></h2>
+          <p data-i18n="sitemap.aficiones.descripcion">Intereses personales y pasatiempos, incluyendo series, programación y ciencia ficción.</p>
+        </section>
+
+        <section class="hobby-section">
+          <h2><a href="contact.html" data-i18n="sitemap.contacto.titulo">Contacto</a></h2>
+          <p data-i18n="sitemap.contacto.descripcion">Información de contacto, redes sociales profesionales y referencias.</p>
+        </section>
+      </nav>
     </article>
   </main>
 

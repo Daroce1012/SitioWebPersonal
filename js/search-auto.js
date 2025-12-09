@@ -1,354 +1,788 @@
-// Buscador automático que lee las páginas HTML directamente
+const DEFAULT_SEARCH_CONFIG = {
+  minQueryLength: 2,
+  debounceDelay: 300,
+  relevanceWeights: {
+    title: 10,
+    description: 5,
+    content: 1,
+    sections: 3
+  },
+  snippet: {
+    maxLength: 300,
+    contextBefore: 100,
+    contextAfter: 150
+  },
+  selectors: {
+    resultsContainer: '#search-results',
+    overlay: '#search-results-overlay',
+    form: '#search-form',
+    input: '#search-input',
+    closeButton: '#close-search'
+  },
+  excludedElements: ['script', 'style', 'nav', 'header', 'footer', 'svg'],
+  excludedClasses: ['.social-links', '.social-link'],
+  excludedSections: {
+    social: [/redes\s+social/i, /social\s+network/i]
+  },
+  redundantPrefixes: [
+    /^sobre mí\s+quién soy\s+/i,
+    /^sobre mí\s+/i,
+    /^quién soy\s+/i,
+    /^referencias\s+personas que pueden avalar.+\s*:\s*/i,
+    /^about me\s+who i am\s+/i,
+    /^about me\s+/i,
+    /^who i am\s+/i,
+    /^references\s+people who can vouch.+\s*:\s*/i
+  ],
+  wordBoundaryChars: [' ', '.', ':', '\n'],
+  translationKeys: {
+    noResults: 'search.no-results',
+    results: 'search.results',
+    result: 'search.result',
+    resultsPlural: 'search.results-plural'
+  }
+};
+
 class AutoSearchEngine {
-  constructor() {
+  constructor(config = {}) {
+    this.config = { ...DEFAULT_SEARCH_CONFIG, ...config };
     this.indexedPages = [];
     this.isIndexing = false;
     this.indexingComplete = false;
+    
+    this.indexer = new PageIndexer(this.config);
+    this.searchEngine = new SearchEngine(this.config);
+    this.snippetBuilder = new SnippetBuilder(this.config);
+    this.ui = new UIRenderer(this.config, this);
+    this.eventManager = new SearchEventManager(this.config, this);
   }
 
-  // Cargar e indexar todas las páginas
-  async indexPages(forceReindex = false) {
-    if (this.isIndexing) return;
-    if (this.indexingComplete && !forceReindex) return;
-    
-    this.isIndexing = true;
-    this.indexedPages = []; // Limpiar páginas anteriores
-    console.log('🔍 Iniciando indexación de páginas...');
-
-    for (let page of pagesToIndex) {
-      try {
-        const response = await fetch(page.url);
-        const html = await response.text();
-
-        // Crear contenedor temporal para leer el HTML
-        const tempDiv = document.createElement('section');
-        tempDiv.innerHTML = html;
-
-        // Eliminar scripts, styles y elementos no deseados
-        const elementsToRemove = tempDiv.querySelectorAll('script, style, nav, header, footer');
-        elementsToRemove.forEach(el => el.remove());
-
-        // Traducir el contenido según el idioma actual
-        if (typeof i18next !== 'undefined') {
-          tempDiv.querySelectorAll('[data-i18n]').forEach(element => {
-            const key = element.getAttribute('data-i18n');
-            const translation = i18next.t(key);
-            
-            if (translation && translation !== key) {
-              if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                element.placeholder = translation;
-              } else {
-                element.innerHTML = translation;
-              }
-            }
-          });
-        }
-
-        // Extraer solo el texto visible del main o body
-        const mainContent = tempDiv.querySelector('main') || tempDiv.querySelector('body') || tempDiv;
-        
-        // Eliminar títulos (h1, h2, h3, h4, h5, h6) para evitar redundancia en snippets
-        const headingsToRemove = mainContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
-        headingsToRemove.forEach(heading => heading.remove());
-        
-        let textContent = mainContent.innerText || mainContent.textContent || '';
-        
-        // Limpiar espacios múltiples y saltos de línea
-        textContent = textContent.replace(/\s+/g, ' ').trim();
-
-        // Obtener el título traducido
-        let title = page.url;
-        if (page.nameKey && typeof i18next !== 'undefined') {
-          title = i18next.t(page.nameKey);
-        } else if (page.name) {
-          title = page.name;
-        } else {
-          title = this.extractTitle(html) || page.url;
-        }
-
-        // Obtener la descripción traducida
-        let description = '';
-        if (page.metaKey && typeof i18next !== 'undefined') {
-          description = i18next.t(page.metaKey);
-        } else {
-          description = this.extractMetaDescription(html);
-        }
-
-        this.indexedPages.push({
-          url: page.url,
-          title: title,
-          description: description,
-          content: textContent,
-          nameKey: page.nameKey
-        });
-
-        console.log(`✅ Indexada: ${title || page.name} (${textContent.length} caracteres)`);
-
-      } catch (error) {
-        console.error(`❌ Error cargando ${page.url}:`, error);
-      }
+  async indexPages(pages, forceReindex = false) {
+    if (this.isIndexing || (this.indexingComplete && !forceReindex)) {
+      return;
     }
 
-    this.isIndexing = false;
-    this.indexingComplete = true;
-    console.log(`🎉 Indexación completa. ${this.indexedPages.length} páginas indexadas.`);
+    this.isIndexing = true;
+    console.log("🔍 Iniciando indexación...");
+
+    try {
+      this.indexedPages = await this.indexer.indexAllPages(pages);
+      this.searchEngine.loadIndex(this.indexedPages);
+      this.indexingComplete = true;
+      console.log(`🎉 Indexación completa. ${this.indexedPages.length} páginas indexadas.`);
+    } catch (error) {
+      console.error("❌ Error durante la indexación:", error);
+      throw error;
+    } finally {
+      this.isIndexing = false;
+    }
   }
 
-  // Extraer título de la página
-  extractTitle(html) {
+  search(query) {
+    const trimmed = query?.trim();
+    if (!trimmed || trimmed.length < this.config.minQueryLength) {
+      return [];
+    }
+
+    const results = this.searchEngine.search(trimmed);
+    
+    return results.map(result => ({
+      ...result,
+      snippet: this.snippetBuilder.buildSnippet(result.page, trimmed)
+    }));
+  }
+
+  displayResults(results, query) {
+    this.ui.displayResults(results, query);
+  }
+
+  clearResults() {
+    this.ui.clearResults();
+  }
+
+  closeOverlay() {
+    this.ui.clearResults();
+  }
+
+  initializeUI() {
+    this.eventManager.setup();
+  }
+}
+
+class PageIndexer {
+  constructor(config) {
+    this.config = config;
+    this.htmlParser = new HTMLParser(config);
+    this.contentExtractor = new ContentExtractor(config);
+  }
+
+  async indexAllPages(pages) {
+    const indexed = [];
+    
+    for (const page of pages) {
+      try {
+        const pageData = await this.indexPage(page);
+        if (pageData) {
+          indexed.push(pageData);
+          console.log(`✅ Indexada: ${pageData.title}`);
+        }
+      } catch (error) {
+        console.error(`❌ Error indexando ${page.url}:`, error);
+      }
+    }
+    
+    return indexed;
+  }
+
+  async indexPage(page) {
+    const html = await this.fetchPage(page.url);
+    
+    if (typeof i18next !== 'undefined' && !i18next.isInitialized) {
+      await new Promise(resolve => {
+        if (i18next.isInitialized) {
+          resolve();
+        } else {
+          i18next.on('initialized', resolve);
+        }
+      });
+    }
+    
+    const container = this.htmlParser.parse(html);
+    const mainContent = this.contentExtractor.extractMain(container);
+    const sections = this.contentExtractor.extractSections(mainContent);
+    
+    return {
+      url: page.url,
+      title: this.getPageTitle(page, html),
+      description: this.getPageDescription(page, html),
+      content: this.contentExtractor.clean(mainContent),
+      nameKey: page.nameKey,
+      metaKey: page.metaKey,
+      sections: sections
+    };
+  }
+
+  getPageTitle(page, html) {
+    if (page.nameKey && this.isI18nAvailable()) {
+      return i18next.t(page.nameKey);
+    }
+    if (page.name) return page.name;
+    
     const match = html.match(/<title>(.*?)<\/title>/i);
-    return match ? match[1].trim() : null;
+    return match ? match[1].trim() : page.url;
   }
 
-  // Extraer meta description
-  extractMetaDescription(html) {
+  getPageDescription(page, html) {
+    if (page.metaKey && this.isI18nAvailable()) {
+      return i18next.t(page.metaKey);
+    }
+    
     const match = html.match(/<meta\s+name=["']description["']\s+content=["'](.*?)["']/i);
     return match ? match[1].trim() : '';
   }
 
-  // Realizar búsqueda
-  search(query) {
-    if (!query || query.trim().length < 2) {
-      return [];
+  async fetchPage(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Error al cargar ${url}: ${response.statusText}`);
     }
+    return await response.text();
+  }
 
-    const searchTerm = query.toLowerCase().trim();
-    const results = [];
+  isI18nAvailable() {
+    return typeof i18next !== 'undefined' && typeof i18next.t === 'function';
+  }
+}
 
-    this.indexedPages.forEach(page => {
-      let relevance = 0;
-      const titleLower = page.title.toLowerCase();
-      const contentLower = page.content.toLowerCase();
-      const descriptionLower = page.description.toLowerCase();
+class HTMLParser {
+  constructor(config) {
+    this.config = config;
+    this.translator = new ContentTranslator();
+  }
 
-      // Calcular relevancia
-      const inTitle = titleLower.includes(searchTerm);
-      const inDescription = descriptionLower.includes(searchTerm);
-      const inContent = contentLower.includes(searchTerm);
+  parse(html) {
+    const container = document.createElement('section');
+    container.innerHTML = html;
+    
+    this.removeExcludedElements(container);
+    this.translator.translate(container);
+    
+    return container;
+  }
 
-      if (inTitle) {
-        relevance += 10; // Título tiene máxima prioridad
-      }
+  removeExcludedElements(container) {
+    this.config.excludedElements.forEach(selector => {
+      container.querySelectorAll(selector).forEach(el => el.remove());
+    });
+    
+    this.config.excludedClasses.forEach(className => {
+      container.querySelectorAll(className).forEach(el => el.remove());
+    });
+  }
+}
+
+class ContentExtractor {
+  constructor(config) {
+    this.config = config;
+  }
+
+  extractMain(container) {
+    const main = container.querySelector('main') || 
+                 container.querySelector('body') || 
+                 container;
+    
+    this.removeExcludedSections(main);
+    this.convertHeadingsToText(main);
+    
+    return main;
+  }
+
+  removeExcludedSections(main) {
+    const cards = main.querySelectorAll('.card');
+    
+    cards.forEach(card => {
+      const heading = card.querySelector('h1, h2');
+      if (!heading) return;
       
-      if (inDescription) {
-        relevance += 5; // Description tiene prioridad media
-      }
+      const text = heading.textContent.trim().toLowerCase();
       
-      if (inContent) {
-        relevance += 1; // Contenido tiene prioridad baja
+      const shouldExclude = Object.values(this.config.excludedSections)
+        .some(patterns => patterns.some(pattern => pattern.test(text)));
+      
+      if (shouldExclude) {
+        card.remove();
       }
+    });
+  }
 
-      // Si encontró algo, agregar a resultados
+  convertHeadingsToText(main) {
+    main.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => {
+      const textNode = document.createTextNode(heading.textContent + ': ');
+      heading.replaceWith(textNode);
+    });
+  }
+
+  extractSections(main) {
+    const sections = {};
+    const cards = main.querySelectorAll('.card');
+    
+    for (const card of cards) {
+      const refContainer = card.querySelector('.references-grid') || 
+                          card.querySelector('.reference-card');
+      
+      if (refContainer) {
+        sections.references = this.clean(refContainer);
+        break;
+      }
+    }
+    
+    return sections;
+  }
+
+  clean(element) {
+    const text = element.innerText || element.textContent || '';
+    return text.replace(/\s+/g, ' ').trim();
+  }
+}
+
+class ContentTranslator {
+  translate(container) {
+    if (!this.isI18nAvailable()) return;
+    
+    if (!i18next.isInitialized) {
+      console.warn('i18next no está inicializado, las traducciones pueden no funcionar correctamente');
+      return;
+    }
+    
+    const currentLanguage = i18next.language;
+    
+    container.querySelectorAll('[data-i18n]').forEach(element => {
+      const key = element.getAttribute('data-i18n');
+      const translation = i18next.t(key, { lng: currentLanguage });
+      
+      if (!translation || translation === key) return;
+      
+      if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+        element.placeholder = translation;
+      } else {
+        element.innerHTML = translation;
+      }
+    });
+  }
+
+  isI18nAvailable() {
+    return typeof i18next !== 'undefined' && typeof i18next.t === 'function';
+  }
+}
+
+class SearchEngine {
+  constructor(config) {
+    this.config = config;
+    this.index = [];
+  }
+
+  loadIndex(pages) {
+    this.index = pages;
+  }
+
+  search(term) {
+    const normalizedTerm = term.toLowerCase();
+    const matches = [];
+    
+    for (const page of this.index) {
+      const relevance = this.calculateRelevance(page, normalizedTerm);
+      
       if (relevance > 0) {
-        // Decidir qué texto usar para el snippet (priorizar donde aparece el término)
-        let textForSnippet = '';
-        if (inContent) {
-          textForSnippet = page.content;
-        } else if (inDescription) {
-          textForSnippet = page.description;
-        } else if (inTitle) {
-          textForSnippet = page.title;
-        }
-        
-        const snippet = this.makeSnippet(textForSnippet, searchTerm);
-        
-        results.push({
-          url: page.url,
-          title: page.title,
-          snippet: snippet,
+        matches.push({
+          page: page,
           relevance: relevance
         });
       }
-    });
-
-    // Ordenar por relevancia
-    return results.sort((a, b) => b.relevance - a.relevance);
+    }
+    
+    return matches.sort((a, b) => b.relevance - a.relevance);
   }
 
-  // Crear fragmento de texto destacando el término buscado
-  makeSnippet(text, searchTerm, maxLength = 200) {
-    if (!text || text.trim().length === 0) {
-      return '';
-    }
-
-    const lowerText = text.toLowerCase();
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    const index = lowerText.indexOf(lowerSearchTerm);
+  calculateRelevance(page, term) {
+    let relevance = 0;
+    const weights = this.config.relevanceWeights;
     
-    // Si no encuentra el término, devolver el inicio del texto
+    if (page.title.toLowerCase().includes(term)) {
+      relevance += weights.title;
+    }
+    
+    if (page.description.toLowerCase().includes(term)) {
+      relevance += weights.description;
+    }
+    
+    if (page.content.toLowerCase().includes(term)) {
+      relevance += weights.content;
+    }
+    
+    if (page.sections) {
+      Object.values(page.sections).forEach(section => {
+        if (section.toLowerCase().includes(term)) {
+          relevance += weights.sections;
+        }
+      });
+    }
+    
+    return relevance;
+  }
+}
+
+class SnippetBuilder {
+  constructor(config) {
+    this.config = config;
+    this.textProcessor = new TextProcessor(config);
+  }
+
+  buildSnippet(page, term) {
+    const text = this.selectBestText(page, term);
+    const normalizedText = text.toLowerCase();
+    const normalizedTerm = term.toLowerCase();
+    const index = normalizedText.indexOf(normalizedTerm);
+    
     if (index === -1) {
-      const truncated = text.substring(0, maxLength);
-      return text.length > maxLength ? truncated + '...' : truncated;
+      return this.textProcessor.truncate(text, this.config.snippet.maxLength);
     }
+    
+    const snippet = this.textProcessor.extractContext(
+      text,
+      index,
+      term.length,
+      this.config.snippet
+    );
+    
+    return this.textProcessor.highlight(snippet, term);
+  }
 
-    // Si el texto es corto, devolverlo completo
-    if (text.length <= maxLength) {
-      const regex = new RegExp(`(${this.escapeRegex(searchTerm)})`, 'gi');
-      return text.replace(regex, '<mark>$1</mark>');
+  selectBestText(page, term) {
+    const normalizedTerm = term.toLowerCase();
+    
+    if (page.sections) {
+      for (const [key, section] of Object.entries(page.sections)) {
+        if (section.toLowerCase().includes(normalizedTerm)) {
+          return section;
+        }
+      }
     }
+    
+    if (page.content.toLowerCase().includes(normalizedTerm)) {
+      return page.content;
+    }
+    
+    if (page.description.toLowerCase().includes(normalizedTerm)) {
+      return page.description;
+    }
+    
+    return page.title;
+  }
+}
 
-    // Crear snippet centrado en el término encontrado
-    const contextBefore = 80;
-    const contextAfter = 80;
-    const start = Math.max(0, index - contextBefore);
-    const end = Math.min(text.length, index + searchTerm.length + contextAfter);
+class TextProcessor {
+  constructor(config) {
+    this.config = config;
+  }
+
+  extractContext(text, index, termLength, snippetConfig) {
+    const { contextBefore, contextAfter, maxLength } = snippetConfig;
     
-    let snippet = text.substring(start, end);
+    let start = this.findSentenceStart(text, index);
+    let end = this.findSentenceEnd(text, index + termLength);
     
-    // Agregar elipsis si es necesario
+    if (end - start > maxLength) {
+      start = Math.max(0, index - contextBefore);
+      end = Math.min(text.length, index + termLength + contextAfter);
+      start = this.adjustToWordBoundary(text, start, index, 'backward');
+      end = this.adjustToWordBoundary(text, end, index + termLength, 'forward');
+    } else {
+      const sentenceBefore = this.findSentenceStart(text, Math.max(0, start - 1));
+      const sentenceAfter = this.findSentenceEnd(text, Math.min(text.length, end + 1));
+      
+      if (sentenceBefore < start && (end - sentenceBefore) <= maxLength) {
+        start = sentenceBefore;
+      }
+      
+      if (sentenceAfter > end && (sentenceAfter - start) <= maxLength) {
+        end = sentenceAfter;
+      }
+    }
+    
+    let snippet = text.substring(start, end).trim();
+    snippet = this.removeRedundantPrefixes(snippet);
+    snippet = this.addHeadingSeparation(snippet, text, index, start);
+    
     if (start > 0) snippet = '...' + snippet;
-    if (end < text.length) snippet = snippet + '...';
-    
-    // Resaltar todas las ocurrencias del término de búsqueda (case insensitive)
-    const regex = new RegExp(`(${this.escapeRegex(searchTerm)})`, 'gi');
-    snippet = snippet.replace(regex, '<mark>$1</mark>');
+    if (end < text.length) snippet += '...';
     
     return snippet;
   }
 
-  // Escapar caracteres especiales de regex
-  escapeRegex(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  addHeadingSeparation(snippet, text, termIndex, snippetStart) {
+    const beforeTerm = text.substring(snippetStart, termIndex);
+    const colonIndex = beforeTerm.lastIndexOf(': ');
+    
+    if (colonIndex !== -1 && colonIndex > beforeTerm.length - 50) {
+      const textAfterColon = beforeTerm.substring(colonIndex + 2).trim();
+      if (textAfterColon.length <= 10 && !snippet.startsWith('...')) {
+        snippet = snippet.replace(/^([^:]+):\s+/, '$1. ');
+      }
+    }
+    
+    return snippet;
   }
 
-  // Mostrar resultados en el DOM
-  displayResults(results, query) {
-    const resultsContainer = document.getElementById('search-results');
-    const overlay = document.getElementById('search-results-overlay');
+  findSentenceStart(text, index) {
+    const sentenceEnders = ['.', ':', '\n', '!', '?'];
+    let start = index;
     
-    if (!resultsContainer || !overlay) return;
+    for (let i = index - 1; i >= 0; i--) {
+      if (sentenceEnders.includes(text[i])) {
+        start = i + 1;
+        break;
+      }
+      if (i === 0) {
+        start = 0;
+        break;
+      }
+    }
+    
+    while (start < text.length && text[start] === ' ') {
+      start++;
+    }
+    
+    return start;
+  }
 
-    // Mostrar el overlay
+  findSentenceEnd(text, index) {
+    const sentenceEnders = ['.', ':', '\n', '!', '?'];
+    let end = index;
+    
+    for (let i = index; i < text.length; i++) {
+      if (sentenceEnders.includes(text[i])) {
+        end = i + 1;
+        break;
+      }
+      if (i === text.length - 1) {
+        end = text.length;
+        break;
+      }
+    }
+    
+    return end;
+  }
+
+  adjustToWordBoundary(text, position, reference, direction) {
+    const boundaryChars = this.config.wordBoundaryChars;
+    
+    if (direction === 'backward') {
+      while (position > 0 && position < reference && 
+             !boundaryChars.includes(text[position])) {
+        position--;
+      }
+      if (position < reference && boundaryChars.includes(text[position])) {
+        position++;
+      }
+    } else {
+      while (position < text.length && 
+             !boundaryChars.includes(text[position])) {
+        position++;
+      }
+    }
+    
+    return position;
+  }
+
+  removeRedundantPrefixes(text) {
+    let cleaned = text;
+    let previousLength;
+    do {
+      previousLength = cleaned.length;
+      for (const pattern of this.config.redundantPrefixes) {
+        cleaned = cleaned.replace(pattern, '').trim();
+      }
+    } while (cleaned.length !== previousLength && cleaned.length > 0);
+    
+    return cleaned.trim();
+  }
+
+  highlight(text, term) {
+    const escaped = this.escapeRegex(term);
+    const regex = new RegExp(`(${escaped})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  }
+
+  truncate(text, maxLength) {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  }
+
+  escapeRegex(text) {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+}
+
+class UIRenderer {
+  constructor(config, engine) {
+    this.config = config;
+    this.engine = engine;
+    this.templateRenderer = new TemplateRenderer(config);
+  }
+
+  displayResults(results, query) {
+    const container = this.getElement(this.config.selectors.resultsContainer);
+    const overlay = this.getElement(this.config.selectors.overlay);
+    
+    if (!container || !overlay) return;
+    
     overlay.style.display = 'block';
     document.body.style.overflow = 'hidden';
-
-    resultsContainer.innerHTML = '';
-
+    
     if (results.length === 0) {
-      const noResultsText = typeof i18next !== 'undefined' 
-        ? i18next.t('search.no-results') 
-        : 'No se encontraron resultados para:';
-      
-      resultsContainer.innerHTML = `
-        <article class="search-no-results">
-          <p>${noResultsText} "${query}"</p>
-        </article>
-      `;
+      container.innerHTML = this.templateRenderer.renderNoResults(query);
       return;
     }
-
-    const resultsText = typeof i18next !== 'undefined' 
-      ? i18next.t('search.results') 
-      : 'Resultados de búsqueda para:';
     
-    // Obtener la traducción correcta para "resultado/resultados"
-    const resultWord = typeof i18next !== 'undefined' 
-      ? (results.length !== 1 ? i18next.t('search.results-plural') : i18next.t('search.result'))
-      : (results.length !== 1 ? 'resultados' : 'resultado');
-    
-    const resultsHTML = `
-      <h2>${resultsText} "${query}" <small>(${results.length} ${resultWord})</small></h2>
-      <section class="search-results-list">
-        ${results.map(result => `
-          <article class="search-result-item">
-            <h3><a href="${result.url}">${result.title}</a></h3>
-            <p class="search-snippet">${result.snippet}</p>
-            <p class="search-url">${result.url}</p>
-          </article>
-        `).join('')}
-      </section>
-    `;
-
-    resultsContainer.innerHTML = resultsHTML;
+    container.innerHTML = this.templateRenderer.renderResults(results, query);
   }
 
-  // Limpiar resultados
   clearResults() {
-    const resultsContainer = document.getElementById('search-results');
-    const overlay = document.getElementById('search-results-overlay');
+    const container = this.getElement(this.config.selectors.resultsContainer);
+    const overlay = this.getElement(this.config.selectors.overlay);
     
-    if (resultsContainer) {
-      resultsContainer.innerHTML = '';
-    }
-    
+    if (container) container.innerHTML = '';
     if (overlay) {
       overlay.style.display = 'none';
       document.body.style.overflow = '';
     }
   }
 
-  // Cerrar overlay
-  closeOverlay() {
-    this.clearResults();
+  getElement(selector) {
+    return document.querySelector(selector);
   }
 }
 
-// Inicializar el buscador automático
+class TemplateRenderer {
+  constructor(config) {
+    this.config = config;
+  }
+
+  renderNoResults(query) {
+    const message = this.getTranslation(
+      this.config.translationKeys.noResults,
+      'No se encontraron resultados para:'
+    );
+    
+    return `
+      <article class="search-no-results">
+        <p>${message} "${this.escapeHtml(query)}"</p>
+      </article>
+    `;
+  }
+
+  renderResults(results, query) {
+    const resultsText = this.getTranslation(
+      this.config.translationKeys.results,
+      'Resultados para:'
+    );
+    const countText = this.getResultCountText(results.length);
+    
+    return `
+      <h2>${resultsText} "${this.escapeHtml(query)}" <small>(${results.length} ${countText})</small></h2>
+      <section class="search-results-list">
+        ${results.map(result => this.renderResultItem(result)).join('')}
+      </section>
+    `;
+  }
+
+  renderResultItem(result) {
+    return `
+      <article class="search-result-item">
+        <h3><a href="${this.escapeHtml(result.page.url)}">${this.escapeHtml(result.page.title)}</a></h3>
+        <p class="search-snippet">${result.snippet}</p>
+      </article>
+    `;
+  }
+
+  getResultCountText(count) {
+    const key = count === 1 
+      ? this.config.translationKeys.result
+      : this.config.translationKeys.resultsPlural;
+    
+    return this.getTranslation(key, count === 1 ? 'resultado' : 'resultados');
+  }
+
+  getTranslation(key, fallback) {
+    if (typeof i18next !== 'undefined' && typeof i18next.t === 'function') {
+      const translation = i18next.t(key);
+      return translation !== key ? translation : fallback;
+    }
+    return fallback;
+  }
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+}
+
+class SearchEventManager {
+  constructor(config, engine) {
+    this.config = config;
+    this.engine = engine;
+    this.debounceTimer = null;
+  }
+
+  setup() {
+    this.setupForm();
+    this.setupInput();
+    this.setupCloseButton();
+    this.setupOverlay();
+    this.setupKeyboard();
+  }
+
+  setupForm() {
+    const form = document.querySelector(this.config.selectors.form);
+    const input = document.querySelector(this.config.selectors.input);
+    
+    if (!form || !input) return;
+    
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.executeSearch(input.value);
+    });
+  }
+
+  setupInput() {
+    const input = document.querySelector(this.config.selectors.input);
+    if (!input) return;
+    
+    input.addEventListener('input', (e) => {
+      this.debounceSearch(e.target.value);
+    });
+  }
+
+  debounceSearch(query) {
+    clearTimeout(this.debounceTimer);
+    
+    const trimmed = query.trim();
+    
+    if (trimmed.length < this.config.minQueryLength) {
+      this.engine.clearResults();
+      return;
+    }
+    
+    this.debounceTimer = setTimeout(() => {
+      this.executeSearch(trimmed);
+    }, this.config.debounceDelay);
+  }
+
+  executeSearch(query) {
+    const results = this.engine.search(query);
+    this.engine.displayResults(results, query);
+  }
+
+  setupCloseButton() {
+    const closeBtn = document.querySelector(this.config.selectors.closeButton);
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => this.engine.closeOverlay());
+    }
+  }
+
+  setupOverlay() {
+    const overlay = document.querySelector(this.config.selectors.overlay);
+    if (overlay) {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          this.engine.closeOverlay();
+        }
+      });
+    }
+  }
+
+  setupKeyboard() {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.engine.closeOverlay();
+      }
+    });
+  }
+}
+
 let autoSearchEngine;
 
-document.addEventListener('DOMContentLoaded', async function() {
-  // Crear instancia del buscador
-  autoSearchEngine = new AutoSearchEngine();
+async function initializeSearchEngine(customConfig = {}, pages = pagesToIndex) {
+  autoSearchEngine = new AutoSearchEngine(customConfig);
+  autoSearchEngine.initializeUI();
   
-  // Indexar páginas al cargar
-  await autoSearchEngine.indexPages();
+  await autoSearchEngine.indexPages(pages);
   
-  const searchForm = document.getElementById('search-form');
-  const searchInput = document.getElementById('search-input');
-  const closeSearchBtn = document.getElementById('close-search');
-  const overlay = document.getElementById('search-results-overlay');
-  
-  if (searchForm && searchInput) {
-    // Búsqueda al enviar el formulario
-    searchForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const query = searchInput.value;
-      if (query.trim().length >= 2) {
-        const results = autoSearchEngine.search(query);
-        autoSearchEngine.displayResults(results, query);
+  return autoSearchEngine;
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  if (typeof i18next !== 'undefined') {
+    await new Promise(resolve => {
+      if (i18next.isInitialized) {
+        resolve();
+      } else {
+        i18next.on('initialized', resolve);
       }
     });
-
-    // Búsqueda en tiempo real mientras escribe
-    let searchTimeout;
-    searchInput.addEventListener('input', function(e) {
-      clearTimeout(searchTimeout);
-      const query = e.target.value;
-      
-      if (query.length >= 2) {
-        // Esperar 300ms después de que el usuario deje de escribir
-        searchTimeout = setTimeout(() => {
-          const results = autoSearchEngine.search(query);
-          autoSearchEngine.displayResults(results, query);
-        }, 300);
-      } else if (query.length === 0) {
-        autoSearchEngine.clearResults();
-      }
-    });
+    await new Promise(resolve => setTimeout(resolve, 50));
   }
-
-  // Cerrar overlay con el botón X
-  if (closeSearchBtn) {
-    closeSearchBtn.addEventListener('click', function() {
-      autoSearchEngine.closeOverlay();
-    });
-  }
-
-  // Cerrar overlay al hacer clic fuera del contenedor
-  if (overlay) {
-    overlay.addEventListener('click', function(e) {
-      if (e.target === overlay) {
-        autoSearchEngine.closeOverlay();
-      }
-    });
-  }
-
-  // Cerrar overlay con la tecla Escape
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      autoSearchEngine.closeOverlay();
-    }
-  });
+  
+  await initializeSearchEngine();
 });
 
-
+if (typeof i18next !== 'undefined') {
+  i18next.on('languageChanged', async (lng) => {
+    if (autoSearchEngine && typeof pagesToIndex !== 'undefined') {
+      console.log(`🔄 Re-indexando páginas en ${lng}...`);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await autoSearchEngine.indexPages(pagesToIndex, true);
+    }
+  });
+}

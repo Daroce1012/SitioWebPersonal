@@ -21,7 +21,6 @@
       </nav>
       
       <aside class="header-tools">
-        <!-- Buscador en el header -->
         <form id="search-form" role="search" class="header-search">
           <input 
             type="search" 
@@ -36,8 +35,6 @@
             </svg>
           </button>
         </form>
-        
-        <!-- Selector de idioma -->
         <section class="language-selector-container">
           <label for="language-selector">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -55,7 +52,6 @@
     </section>
   </header>
 
-  <!-- Resultados de búsqueda (modal/overlay) -->
   <aside id="search-results-overlay" class="search-overlay" role="dialog" aria-modal="true" aria-label="Resultados de búsqueda" style="display: none;">
     <section class="search-results-container">
       <button id="close-search" class="close-search-btn" aria-label="Cerrar búsqueda">✕</button>
@@ -65,21 +61,16 @@
 
   <main id="contenido-principal">
     <article class="about">
-      <header>
-        <h1 data-i18n="about.titulo">Sobre mí</h1>
-      </header>
-
+      <h1 data-i18n="about.titulo">Sobre mí</h1>
       <figure>
         <img src="img/foto-perfil.jpg" alt="Retrato de Daniela" class="about-img">
       </figure>
-
       <section class="card">
         <h2 data-i18n="about.quien-soy">Quién soy</h2>
         <p data-i18n="about.descripcion1">Me llamo Daniela Rodríguez Cepero. Soy desarrolladora Full-Stack, profesora e investigadora en programación aplicada a matemáticas. Tengo experiencia en tecnologías como React, Angular, Node.js, Python y bases de datos SQL/NoSQL.</p>
         <p data-i18n="about.descripcion2">He trabajado como profesora de álgebra y matemáticas, integrando herramientas computacionales para mejorar el aprendizaje. Como investigadora, me especializo en métodos numéricos y simulaciones, destacando mi proyecto CRYSTAL para modelado epidemiológico.</p>
       </section>
 
-      <!-- Formación -->
       <section class="card">
         <h2 data-i18n="about.formacion">Formación</h2>
         <section class="timeline">
@@ -107,8 +98,6 @@
           </article>
         </section>
       </section>
-
-      <!-- Experiencia Laboral -->
       <section class="card">
         <h2 data-i18n="about.experiencia">Experiencia Laboral</h2>
         <section class="timeline">
@@ -137,8 +126,6 @@
           </article>
         </section>
       </section>
-
-      <!-- Certificaciones y Logros -->
       <section class="card">
         <h2 data-i18n="about.certificaciones">Certificaciones y Logros</h2>
         <section class="timeline">
@@ -162,22 +149,23 @@
   </main>
 
   <footer class="site-footer">
-    <p>&copy; <time datetime="2025-12-12">12/12/2025</time> Daniela. <span data-i18n="footer.derechos">Todos los derechos reservados.</span></p>
-    <p>
-      <a href="https://jigsaw.w3.org/css-validator/check/referer">
-        <img class="validator-badge"
-            src="https://jigsaw.w3.org/css-validator/images/vcss"
-            alt="Valid CSS!">
-      </a>
-    </p>
+    <div class="footer-content">
+      <p class="footer-copyright">&copy; <time datetime="2025-12-12">12/12/2025</time> Daniela. <span data-i18n="footer.derechos">Todos los derechos reservados.</span></p>
+      <nav class="footer-links" aria-label="Enlaces del pie de página">
+        <a href="sitemap.html" data-i18n="footer.mapa-sitio">Mapa del sitio</a>
+        <span class="footer-separator" aria-hidden="true">|</span>
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="validator-link">
+          <img class="validator-badge"
+              src="https://jigsaw.w3.org/css-validator/images/vcss"
+              alt="Valid CSS!">
+        </a>
+      </nav>
+    </div>
   </footer>
 
-  <!-- i18next para internacionalización -->
   <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.2.0/i18nextBrowserLanguageDetector.min.js"></script>
   <script src="js/i18n-config.js"></script>
-  
-  <!-- Buscador automático -->
   <script src="js/pages.js"></script>
   <script src="js/search-auto.js"></script>
 </body>
