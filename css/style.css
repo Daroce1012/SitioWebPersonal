@@ -375,6 +375,79 @@ h1, h2 {
   white-space: nowrap;
 }
 
+/* ===== TOOLTIPS FLOTANTES ===== */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(5px);
+  padding: 0.6rem 1rem;
+  background: #2c2c2c;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 10000;
+}
+
+[data-tooltip]::after {
+  content: '';
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: #2c2c2c;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 10000;
+}
+
+[data-tooltip]:hover::before,
+[data-tooltip]:focus::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+[data-tooltip]:hover::after,
+[data-tooltip]:focus::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Tooltip específico para botón de búsqueda */
+.search-btn[data-tooltip]::before {
+  top: calc(100% + 12px);
+}
+
+.search-btn[data-tooltip]::after {
+  top: calc(100% + 4px);
+}
+
+/* Tooltip específico para selector de idioma */
+.language-label[data-tooltip]::before {
+  top: calc(100% + 12px);
+  font-size: 0.8rem;
+}
+
+.language-label[data-tooltip]::after {
+  top: calc(100% + 4px);
+}
+
 /* ===== OVERLAY DE RESULTADOS DE BÚSQUEDA ===== */
 .search-overlay {
   position: fixed;

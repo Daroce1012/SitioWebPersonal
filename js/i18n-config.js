@@ -71,10 +71,12 @@ const TRANSLATION_RESOURCES = {
       'footer.mapa-sitio': 'Mapa del sitio',
       'search.placeholder': 'Buscar en el sitio...',
       'search.button': 'Buscar',
+      'search.tooltip': 'Buscar contenido en el sitio',
       'search.no-results': 'No se encontraron resultados para:',
       'search.results': 'Resultados de búsqueda para:',
       'search.result': 'resultado',
       'search.results-plural': 'resultados',
+      'language.tooltip': 'Cambiar idioma del sitio',
       'sitemap.titulo': 'Mapa del sitio',
       'sitemap.descripcion': 'Explora todas las páginas disponibles en este sitio web:',
       'sitemap.inicio.titulo': 'Inicio',
@@ -158,10 +160,12 @@ const TRANSLATION_RESOURCES = {
       'footer.mapa-sitio': 'Site map',
       'search.placeholder': 'Search the site...',
       'search.button': 'Search',
+      'search.tooltip': 'Search site content',
       'search.no-results': 'No results found for:',
       'search.results': 'Search results for:',
       'search.result': 'result',
       'search.results-plural': 'results',
+      'language.tooltip': 'Change site language',
       'sitemap.titulo': 'Site map',
       'sitemap.descripcion': 'Explore all available pages on this website:',
       'sitemap.inicio.titulo': 'Home',
@@ -224,6 +228,7 @@ function updateMetaDescription() {
 }
 
 function updateI18nElements() {
+  // Actualizar elementos con data-i18n
   document.querySelectorAll('[data-i18n]').forEach(element => {
     const key = element.getAttribute('data-i18n');
     const translation = i18next.t(key);
@@ -234,6 +239,16 @@ function updateI18nElements() {
       } else {
         element.innerHTML = translation;
       }
+    }
+  });
+  
+  // Actualizar tooltips con data-i18n-tooltip
+  document.querySelectorAll('[data-i18n-tooltip]').forEach(element => {
+    const key = element.getAttribute('data-i18n-tooltip');
+    const translation = i18next.t(key);
+    
+    if (translation && translation !== key) {
+      element.setAttribute('data-tooltip', translation);
     }
   });
 }
