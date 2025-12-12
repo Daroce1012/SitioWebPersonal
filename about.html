@@ -10,7 +10,7 @@
 <body>
 
   <header class="site-header">
-    <section class="header-container">
+    <div class="header-container">
       <nav aria-label="Navegación principal">
         <ul class="main-nav">
           <li><a href="index.html" data-i18n="nav.inicio">Inicio</a></li>
@@ -22,43 +22,43 @@
       
       <aside class="header-tools">
         <form id="search-form" role="search" class="header-search">
+          <label for="search-input" class="visually-hidden" data-i18n="search.label">Buscar en el sitio</label>
           <input 
             type="search" 
             id="search-input" 
             data-i18n="search.placeholder"
-            placeholder="Buscar en el sitio..."
-            aria-label="Buscar en el sitio">
+            placeholder="Buscar en el sitio...">
           <button type="submit" class="search-btn" aria-label="Buscar" data-i18n-tooltip="search.tooltip">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.35-4.35"></path>
             </svg>
           </button>
         </form>
-        <section class="language-selector-container">
+        <div class="language-selector-container">
           <label for="language-selector" class="language-label" data-i18n-tooltip="language.tooltip">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="2" y1="12" x2="22" y2="12"></line>
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
-            <span class="visually-hidden">Idioma</span>
+            <span class="visually-hidden" data-i18n="language.label">Seleccionar idioma</span>
           </label>
-          <select id="language-selector" aria-label="Seleccionar idioma">
+          <select id="language-selector">
             <option value="es">Español</option>
             <option value="en">English</option>
           </select>
-        </section>
+        </div>
       </aside>
-    </section>
+    </div>
   </header>
 
-  <aside id="search-results-overlay" class="search-overlay" role="dialog" aria-modal="true" aria-label="Resultados de búsqueda" style="display: none;">
-    <section class="search-results-container">
+  <dialog id="search-results-overlay" class="search-overlay" aria-label="Resultados de búsqueda">
+    <div class="search-results-container">
       <button id="close-search" class="close-search-btn" aria-label="Cerrar búsqueda">✕</button>
-      <section id="search-results"></section>
-    </section>
-  </aside>
+      <output id="search-results" for="search-input"></output>
+    </div>
+  </dialog>
 
   <main id="contenido-principal">
     <article class="about">
@@ -74,77 +74,87 @@
 
       <section class="card">
         <h2 data-i18n="about.formacion">Formación</h2>
-        <section class="timeline">
-          <article class="timeline-item">
-            <h3 data-i18n="about.formacion.master.titulo">Máster en Ingeniería Web</h3>
-            <p class="timeline-date" data-i18n="about.formacion.master.fecha">2025 - Actualidad</p>
-            <p class="timeline-institution" data-i18n="about.formacion.master.institucion">Universidad de Oviedo, España</p>
-            <p class="timeline-description" data-i18n="about.formacion.master.descripcion">
-              Especialización en Seguridad Web. Enfocada en proteger la información y 
-              garantizar la integridad de sistemas en línea mediante técnicas avanzadas 
-              de ciberseguridad aplicadas al desarrollo web.
-            </p>
-          </article>
+        <ol class="timeline" reversed>
+          <li class="timeline-item">
+            <article>
+              <h3 data-i18n="about.formacion.master.titulo">Máster en Ingeniería Web</h3>
+              <p class="timeline-date" data-i18n="about.formacion.master.fecha">2025 - Actualidad</p>
+              <p class="timeline-institution" data-i18n="about.formacion.master.institucion">Universidad de Oviedo, España</p>
+              <p class="timeline-description" data-i18n="about.formacion.master.descripcion">
+                Especialización en Seguridad Web. Enfocada en proteger la información y 
+                garantizar la integridad de sistemas en línea mediante técnicas avanzadas 
+                de ciberseguridad aplicadas al desarrollo web.
+              </p>
+            </article>
+          </li>
           
-          <article class="timeline-item">
-            <h3 data-i18n="about.formacion.licenciatura.titulo">Licenciatura en Ciencias de la Computación</h3>
-            <p class="timeline-date" data-i18n="about.formacion.licenciatura.fecha">Septiembre 2018 - Diciembre 2023</p>
-            <p class="timeline-institution" data-i18n="about.formacion.licenciatura.institucion">Universidad de La Habana, Cuba</p>
-            <p class="timeline-description" data-i18n="about.formacion.licenciatura.descripcion">
-              Formación integral combinando conocimientos avanzados en matemáticas, programación 
-              y tecnologías de la información. Dominio de lenguajes como Python, C++, C#, JavaScript, 
-              frameworks como React y .NET, algoritmos, estructuras de datos, bases de datos SQL/NoSQL, 
-              inteligencia artificial, redes y ciberseguridad.
-            </p>
-          </article>
-        </section>
+          <li class="timeline-item">
+            <article>
+              <h3 data-i18n="about.formacion.licenciatura.titulo">Licenciatura en Ciencias de la Computación</h3>
+              <p class="timeline-date" data-i18n="about.formacion.licenciatura.fecha">Septiembre 2018 - Diciembre 2023</p>
+              <p class="timeline-institution" data-i18n="about.formacion.licenciatura.institucion">Universidad de La Habana, Cuba</p>
+              <p class="timeline-description" data-i18n="about.formacion.licenciatura.descripcion">
+                Formación integral combinando conocimientos avanzados en matemáticas, programación 
+                y tecnologías de la información. Dominio de lenguajes como Python, C++, C#, JavaScript, 
+                frameworks como React y .NET, algoritmos, estructuras de datos, bases de datos SQL/NoSQL, 
+                inteligencia artificial, redes y ciberseguridad.
+              </p>
+            </article>
+          </li>
+        </ol>
       </section>
       <section class="card">
         <h2 data-i18n="about.experiencia">Experiencia Laboral</h2>
-        <section class="timeline">
-          <article class="timeline-item">
-            <h3 data-i18n="about.experiencia.fullstack.titulo">Desarrolladora Full-Stack</h3>
-            <p class="timeline-date" data-i18n="about.experiencia.fullstack.fecha">Febrero 2024 - Actualidad</p>
-            <p class="timeline-institution" data-i18n="about.experiencia.fullstack.institucion">IBERANT SOLUTIONS S.L. (Remoto)</p>
-            <p class="timeline-description" data-i18n="about.experiencia.fullstack.descripcion">
-              Diseño, desarrollo y mantenimiento de aplicaciones web completas usando React para frontend 
-              y .NET con C# para backend. Creación de interfaces dinámicas y responsivas (UI/UX), 
-              desarrollo de APIs robustas y escalables con .NET Core, gestión y optimización de bases de 
-              datos SQL Server, y colaboración con equipos multidisciplinarios.
-            </p>
-          </article>
+        <ol class="timeline" reversed>
+          <li class="timeline-item">
+            <article>
+              <h3 data-i18n="about.experiencia.fullstack.titulo">Desarrolladora Full-Stack</h3>
+              <p class="timeline-date" data-i18n="about.experiencia.fullstack.fecha">Febrero 2024 - Actualidad</p>
+              <p class="timeline-institution" data-i18n="about.experiencia.fullstack.institucion">IBERANT SOLUTIONS S.L. (Remoto)</p>
+              <p class="timeline-description" data-i18n="about.experiencia.fullstack.descripcion">
+                Diseño, desarrollo y mantenimiento de aplicaciones web completas usando React para frontend 
+                y .NET con C# para backend. Creación de interfaces dinámicas y responsivas (UI/UX), 
+                desarrollo de APIs robustas y escalables con .NET Core, gestión y optimización de bases de 
+                datos SQL Server, y colaboración con equipos multidisciplinarios.
+              </p>
+            </article>
+          </li>
           
-          <article class="timeline-item">
-            <h3 data-i18n="about.experiencia.profesora.titulo">Profesora Asistente de Álgebra y Matemáticas</h3>
-            <p class="timeline-date" data-i18n="about.experiencia.profesora.fecha">Enero 2023 - Actualidad</p>
-            <p class="timeline-institution" data-i18n="about.experiencia.profesora.institucion">Facultad de Economía, Universidad de La Habana, Cuba</p>
-            <p class="timeline-description" data-i18n="about.experiencia.profesora.descripcion">
-              Impartición de clases de álgebra a nivel universitario, diseño de materiales didácticos, 
-              asesoramiento académico personalizado, colaboración en actualizaciones curriculares, 
-              y participación en actividades de investigación relacionadas con matemáticas aplicadas 
-              a la economía. Implementación de métodos innovadores de enseñanza integrando herramientas computacionales.
-            </p>
-          </article>
-        </section>
+          <li class="timeline-item">
+            <article>
+              <h3 data-i18n="about.experiencia.profesora.titulo">Profesora Asistente de Álgebra y Matemáticas</h3>
+              <p class="timeline-date" data-i18n="about.experiencia.profesora.fecha">Enero 2023 - Actualidad</p>
+              <p class="timeline-institution" data-i18n="about.experiencia.profesora.institucion">Facultad de Economía, Universidad de La Habana, Cuba</p>
+              <p class="timeline-description" data-i18n="about.experiencia.profesora.descripcion">
+                Impartición de clases de álgebra a nivel universitario, diseño de materiales didácticos, 
+                asesoramiento académico personalizado, colaboración en actualizaciones curriculares, 
+                y participación en actividades de investigación relacionadas con matemáticas aplicadas 
+                a la economía. Implementación de métodos innovadores de enseñanza integrando herramientas computacionales.
+              </p>
+            </article>
+          </li>
+        </ol>
       </section>
       <section class="card">
         <h2 data-i18n="about.certificaciones">Certificaciones y Logros</h2>
-        <section class="timeline">
-          <article class="timeline-item">
-            <h3 data-i18n="about.certificaciones.cicci.titulo">Ponente en VII CICCI 2024</h3>
-            <p class="timeline-date" data-i18n="about.certificaciones.cicci.fecha">Marzo 2024</p>
-            <p class="timeline-institution" data-i18n="about.certificaciones.cicci.institucion">VII Conferencia Internacional de Ciencias Computacionales e Informática</p>
-            <p class="timeline-description" data-i18n="about.certificaciones.cicci.descripcion">
-              Presentación del trabajo de investigación <strong>"CRYSTAL: Herramienta computacional para 
-              resolver modelos epidemiológicos definidos por ecuaciones diferenciales ordinarias"</strong>. 
-              Diseño y desarrollo de una herramienta innovadora para simular y analizar modelos epidemiológicos 
-              basados en ecuaciones diferenciales ordinarias, aplicando metodologías numéricas y técnicas 
-              avanzadas de programación. Esta participación permitió compartir conocimientos con la comunidad 
-              científica internacional sobre las últimas tendencias en ciencias computacionales aplicadas a 
-              problemas multidisciplinarios.
-            </p>
-          </article>
-        </section>
+        <ol class="timeline">
+          <li class="timeline-item">
+            <article>
+              <h3 data-i18n="about.certificaciones.cicci.titulo">Ponente en VII CICCI 2024</h3>
+              <p class="timeline-date" data-i18n="about.certificaciones.cicci.fecha">Marzo 2024</p>
+              <p class="timeline-institution" data-i18n="about.certificaciones.cicci.institucion">VII Conferencia Internacional de Ciencias Computacionales e Informática</p>
+              <p class="timeline-description" data-i18n="about.certificaciones.cicci.descripcion">
+                Presentación del trabajo de investigación <strong>"CRYSTAL: Herramienta computacional para 
+                resolver modelos epidemiológicos definidos por ecuaciones diferenciales ordinarias"</strong>. 
+                Diseño y desarrollo de una herramienta innovadora para simular y analizar modelos epidemiológicos 
+                basados en ecuaciones diferenciales ordinarias, aplicando metodologías numéricas y técnicas 
+                avanzadas de programación. Esta participación permitió compartir conocimientos con la comunidad 
+                científica internacional sobre las últimas tendencias en ciencias computacionales aplicadas a 
+                problemas multidisciplinarios.
+              </p>
+            </article>
+          </li>
+        </ol>
       </section>
     </article>
   </main>

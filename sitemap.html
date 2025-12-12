@@ -10,7 +10,7 @@
 <body>
 
   <header class="site-header">
-    <section class="header-container">
+    <div class="header-container">
       <nav aria-label="Navegación principal">
         <ul class="main-nav">
           <li><a href="index.html" data-i18n="nav.inicio">Inicio</a></li>
@@ -22,68 +22,70 @@
       
       <aside class="header-tools">
         <form id="search-form" role="search" class="header-search">
+          <label for="search-input" class="visually-hidden" data-i18n="search.label">Buscar en el sitio</label>
           <input 
             type="search" 
             id="search-input" 
             data-i18n="search.placeholder"
-            placeholder="Buscar en el sitio..."
-            aria-label="Buscar en el sitio">
+            placeholder="Buscar en el sitio...">
           <button type="submit" class="search-btn" aria-label="Buscar" data-i18n-tooltip="search.tooltip">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.35-4.35"></path>
             </svg>
           </button>
         </form>
-        <section class="language-selector-container">
+        <div class="language-selector-container">
           <label for="language-selector" class="language-label" data-i18n-tooltip="language.tooltip">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="2" y1="12" x2="22" y2="12"></line>
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
-            <span class="visually-hidden">Idioma</span>
+            <span class="visually-hidden" data-i18n="language.label">Seleccionar idioma</span>
           </label>
-          <select id="language-selector" aria-label="Seleccionar idioma">
+          <select id="language-selector">
             <option value="es">Español</option>
             <option value="en">English</option>
           </select>
-        </section>
+        </div>
       </aside>
-    </section>
+    </div>
   </header>
 
-  <aside id="search-results-overlay" class="search-overlay" role="dialog" aria-modal="true" aria-label="Resultados de búsqueda" style="display: none;">
-    <section class="search-results-container">
+  <dialog id="search-results-overlay" class="search-overlay" aria-label="Resultados de búsqueda">
+    <div class="search-results-container">
       <button id="close-search" class="close-search-btn" aria-label="Cerrar búsqueda">✕</button>
-      <section id="search-results"></section>
-    </section>
-  </aside>
+      <output id="search-results" for="search-input"></output>
+    </div>
+  </dialog>
 
   <main id="contenido-principal">
     <article class="card">
       <h1 data-i18n="sitemap.titulo">Mapa del sitio</h1>
       
       <nav aria-label="Mapa del sitio">
-        <section class="hobby-section">
-          <h2><a href="index.html" data-i18n="sitemap.inicio.titulo">Inicio</a></h2>
-          <p data-i18n="sitemap.inicio.descripcion">Página principal con presentación personal y resumen profesional.</p>
-        </section>
+        <ul class="sitemap-list">
+          <li class="hobby-section">
+            <h2><a href="index.html" data-i18n="sitemap.inicio.titulo">Inicio</a></h2>
+            <p data-i18n="sitemap.inicio.descripcion">Página principal con presentación personal y resumen profesional.</p>
+          </li>
 
-        <section class="hobby-section">
-          <h2><a href="about.html" data-i18n="sitemap.sobre-mi.titulo">Sobre mí</a></h2>
-          <p data-i18n="sitemap.sobre-mi.descripcion">Información detallada sobre formación académica, experiencia laboral y logros profesionales.</p>
-        </section>
+          <li class="hobby-section">
+            <h2><a href="about.html" data-i18n="sitemap.sobre-mi.titulo">Sobre mí</a></h2>
+            <p data-i18n="sitemap.sobre-mi.descripcion">Información detallada sobre formación académica, experiencia laboral y logros profesionales.</p>
+          </li>
 
-        <section class="hobby-section">
-          <h2><a href="hobbies.html" data-i18n="sitemap.aficiones.titulo">Aficiones</a></h2>
-          <p data-i18n="sitemap.aficiones.descripcion">Intereses personales y pasatiempos, incluyendo series, programación y ciencia ficción.</p>
-        </section>
+          <li class="hobby-section">
+            <h2><a href="hobbies.html" data-i18n="sitemap.aficiones.titulo">Aficiones</a></h2>
+            <p data-i18n="sitemap.aficiones.descripcion">Intereses personales y pasatiempos, incluyendo series, programación y ciencia ficción.</p>
+          </li>
 
-        <section class="hobby-section">
-          <h2><a href="contact.html" data-i18n="sitemap.contacto.titulo">Contacto</a></h2>
-          <p data-i18n="sitemap.contacto.descripcion">Información de contacto, redes sociales profesionales y referencias.</p>
-        </section>
+          <li class="hobby-section">
+            <h2><a href="contact.html" data-i18n="sitemap.contacto.titulo">Contacto</a></h2>
+            <p data-i18n="sitemap.contacto.descripcion">Información de contacto, redes sociales profesionales y referencias.</p>
+          </li>
+        </ul>
       </nav>
     </article>
   </main>

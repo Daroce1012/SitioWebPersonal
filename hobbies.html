@@ -10,7 +10,7 @@
 <body>
 
   <header class="site-header">
-    <section class="header-container">
+    <div class="header-container">
       <nav aria-label="Navegación principal">
         <ul class="main-nav">
           <li><a href="index.html" data-i18n="nav.inicio">Inicio</a></li>
@@ -22,66 +22,68 @@
       
       <aside class="header-tools">
         <form id="search-form" role="search" class="header-search">
+          <label for="search-input" class="visually-hidden" data-i18n="search.label">Buscar en el sitio</label>
           <input 
             type="search" 
             id="search-input" 
             data-i18n="search.placeholder"
-            placeholder="Buscar en el sitio..."
-            aria-label="Buscar en el sitio">
+            placeholder="Buscar en el sitio...">
           <button type="submit" class="search-btn" aria-label="Buscar" data-i18n-tooltip="search.tooltip">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.35-4.35"></path>
             </svg>
           </button>
         </form>
-        <section class="language-selector-container">
+        <div class="language-selector-container">
           <label for="language-selector" class="language-label" data-i18n-tooltip="language.tooltip">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="2" y1="12" x2="22" y2="12"></line>
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
-            <span class="visually-hidden">Idioma</span>
+            <span class="visually-hidden" data-i18n="language.label">Seleccionar idioma</span>
           </label>
-          <select id="language-selector" aria-label="Seleccionar idioma">
+          <select id="language-selector">
             <option value="es">Español</option>
             <option value="en">English</option>
           </select>
-        </section>
+        </div>
       </aside>
-    </section>
+    </div>
   </header>
 
-  <aside id="search-results-overlay" class="search-overlay" role="dialog" aria-modal="true" aria-label="Resultados de búsqueda" style="display: none;">
-    <section class="search-results-container">
+  <dialog id="search-results-overlay" class="search-overlay" aria-label="Resultados de búsqueda">
+    <div class="search-results-container">
       <button id="close-search" class="close-search-btn" aria-label="Cerrar búsqueda">✕</button>
-      <section id="search-results"></section>
-    </section>
-  </aside>
+      <output id="search-results" for="search-input"></output>
+    </div>
+  </dialog>
 
   <main id="contenido-principal">
     <article class="card">
       <h1 data-i18n="hobbies.titulo">Mis aficiones</h1>
-      <section class="hobby-section">
-        <h2 data-i18n="hobbies.series-coreanas">Series coreanas</h2>
-        <p data-i18n="hobbies.series-desc">Me encanta ver dramas y series coreanas, que combinan historias intensas con riqueza cultural y emocional.</p>
-      </section>
+      <ul class="hobbies-list">
+        <li class="hobby-section">
+          <h2 data-i18n="hobbies.series-coreanas">Series coreanas</h2>
+          <p data-i18n="hobbies.series-desc">Me encanta ver dramas y series coreanas, que combinan historias intensas con riqueza cultural y emocional.</p>
+        </li>
 
-      <section class="hobby-section">
-        <h2 data-i18n="hobbies.programacion">Programación</h2>
-        <p data-i18n="hobbies.programacion-desc">La programación es mi vocación: me gusta experimentar con nuevos lenguajes y frameworks, y construir proyectos personales.</p>
-      </section>
+        <li class="hobby-section">
+          <h2 data-i18n="hobbies.programacion">Programación</h2>
+          <p data-i18n="hobbies.programacion-desc">La programación es mi vocación: me gusta experimentar con nuevos lenguajes y frameworks, y construir proyectos personales.</p>
+        </li>
 
-      <section class="hobby-section">
-        <h2 data-i18n="hobbies.ciencia-ficcion">Ciencia ficción</h2>
-        <p data-i18n="hobbies.ciencia-desc">Disfruto de series y películas de ciencia ficción por su capacidad para imaginar futuros y posibilidades tecnológicas.</p>
-      </section>
+        <li class="hobby-section">
+          <h2 data-i18n="hobbies.ciencia-ficcion">Ciencia ficción</h2>
+          <p data-i18n="hobbies.ciencia-desc">Disfruto de series y películas de ciencia ficción por su capacidad para imaginar futuros y posibilidades tecnológicas.</p>
+        </li>
 
-      <section class="hobby-section">
-        <h2 data-i18n="hobbies.peliculas">Películas</h2>
-        <p data-i18n="hobbies.peliculas-desc">Mi película favorita es <strong>Crepúsculo</strong>, me encanta la mezcla entre romance y elementos fantásticos.</p>
-      </section>
+        <li class="hobby-section">
+          <h2 data-i18n="hobbies.peliculas">Películas</h2>
+          <p data-i18n="hobbies.peliculas-desc">Mi película favorita es <strong>Crepúsculo</strong>, me encanta la mezcla entre romance y elementos fantásticos.</p>
+        </li>
+      </ul>
     </article>
   </main>
 

@@ -576,7 +576,7 @@ class UIRenderer {
     
     if (!container || !overlay) return;
     
-    overlay.style.display = 'block';
+    overlay.showModal();
     document.body.style.overflow = 'hidden';
     
     if (results.length === 0) {
@@ -593,7 +593,7 @@ class UIRenderer {
     
     if (container) container.innerHTML = '';
     if (overlay) {
-      overlay.style.display = 'none';
+      overlay.close();
       document.body.style.overflow = '';
     }
   }

@@ -10,7 +10,7 @@
 <body>
 
   <header class="site-header">
-    <section class="header-container">
+    <div class="header-container">
       <nav aria-label="Navegación principal">
         <ul class="main-nav">
           <li><a href="index.html" aria-current="page" data-i18n="nav.inicio">Inicio</a></li>
@@ -22,48 +22,47 @@
       
       <aside class="header-tools">
         <form id="search-form" role="search" class="header-search">
+          <label for="search-input" class="visually-hidden" data-i18n="search.label">Buscar en el sitio</label>
           <input 
             type="search" 
             id="search-input" 
             data-i18n="search.placeholder"
-            placeholder="Buscar en el sitio..."
-            aria-label="Buscar en el sitio">
+            placeholder="Buscar en el sitio...">
           <button type="submit" class="search-btn" aria-label="Buscar" data-i18n-tooltip="search.tooltip">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.35-4.35"></path>
             </svg>
           </button>
         </form>
-        <section class="language-selector-container">
+        <div class="language-selector-container">
           <label for="language-selector" class="language-label" data-i18n-tooltip="language.tooltip">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="2" y1="12" x2="22" y2="12"></line>
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
-            <span class="visually-hidden">Idioma</span>
+            <span class="visually-hidden" data-i18n="language.label">Seleccionar idioma</span>
           </label>
-          <select id="language-selector" aria-label="Seleccionar idioma">
+          <select id="language-selector">
             <option value="es">Español</option>
             <option value="en">English</option>
           </select>
-        </section>
+        </div>
       </aside>
-    </section>
+    </div>
   </header>
 
-  <aside id="search-results-overlay" class="search-overlay" role="dialog" aria-modal="true" aria-label="Resultados de búsqueda" style="display: none;">
-    <section class="search-results-container">
+  <dialog id="search-results-overlay" class="search-overlay" aria-label="Resultados de búsqueda">
+    <div class="search-results-container">
       <button id="close-search" class="close-search-btn" aria-label="Cerrar búsqueda">✕</button>
-      <section id="search-results"></section>
-    </section>
-  </aside>
+      <output id="search-results" for="search-input"></output>
+    </div>
+  </dialog>
 
   <section class="hero" role="banner" aria-label="Presentación">
     <video autoplay muted loop playsinline class="hero-video" aria-label="Video de fondo con animación de figuras decorativas">
       <source src="video/intro.mp4" type="video/mp4">
-      <track kind="captions" src="" srclang="es" label="Español" default>
       Tu navegador no soporta video en HTML5.
     </video>
     <header class="hero-content">
